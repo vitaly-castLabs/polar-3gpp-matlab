@@ -24,7 +24,11 @@ if n ~= round(n)
     error('N should be a power of 2');
 end
 
-G_N = 1;
-for i=1:n
-    G_N = kron(G_N,[1 0; 1 1]);
+G = cell(n);
+G{1} = [1 0; 1 1];
+
+for i=2:n
+    G{i} = kron(G{i-1},[1 0; 1 1]);
 end
+
+G_N = G{n};
