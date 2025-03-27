@@ -49,7 +49,6 @@ function a_hat = PDCCH_decoder(f_tilde, A, L, min_sum, RNTI)
 % FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
 % more details.
 
-addpath 'components'
 
 if A == 0
     error('polar_3gpp_matlab:UnsupportedBlockLength','A should be no less than 1.');

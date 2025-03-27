@@ -33,7 +33,6 @@ function f = PBCH_encoder(a, E)
 % FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
 % more details.
 
-addpath 'components'
 
 A = length(a);
 

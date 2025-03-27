@@ -50,7 +50,6 @@ function a_hat = PUCCH_decoder(f_tilde, A, L, min_sum)
 % FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 % more details.
 
-addpath 'components'
 
 G = length(f_tilde);
 

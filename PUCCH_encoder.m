@@ -39,7 +39,6 @@ function f = PUCCH_encoder(a, G)
 % FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 % more details.
 
-addpath 'components'
 
 A = length(a);
 

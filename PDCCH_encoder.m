@@ -38,7 +38,6 @@ function f = PDCCH_encoder(a, E, RNTI)
 % FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
 % more details.
 
-addpath 'components'
 
 if nargin == 2
     RNTI = ones(1,16);
