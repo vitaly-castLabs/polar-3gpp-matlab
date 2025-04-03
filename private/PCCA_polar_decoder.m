@@ -144,9 +144,11 @@ bits_updated = [~info_bit_pattern',false(N,log2(N))]; % The zero values that hav
 llrs = [zeros(N,log2(N)),d_tilde']; % Initialse the LLRs. The right-most column corresponds to the received LLRS
 llrs_updated = [false(N,log2(N)),true(N,1)]; % The received LLRs have been updated.
 
+coder.varsize("PM", [1, 1, Inf]);
 PM = zeros(1,1,1); % Initialise the path metrics
 L_prime = 1; % Initialise the list size to 1. This will grow as the decoding proceeds
 
+coder.varsize("y", [Inf, Inf, Inf]);
 y = zeros(1,PC_circular_buffer_length);
 
 

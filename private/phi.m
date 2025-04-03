@@ -11,6 +11,8 @@ function PM_i = phi(PM_iminus1,L_i,u_i)
 % FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
 % more details.
 
+coder.varsize('PM_i', [1, 1, Inf]);
+
 global approx_minstar
 if approx_minstar
     PM_i = PM_iminus1;
