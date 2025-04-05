@@ -3,34 +3,35 @@ function test_ecc_scatter()
 This test picks randomly scattered ${crop} bits/LLRs to preserve,
 while all other bits/LLRs are set to 0. This is different from
 test_ecc_crop where we preserve contiguous blocks of bits/LLRs.
-Scatter: 15 bits, decoding success: 14.2%, wrong corrections: 10.4%
-Scatter: 16 bits, decoding success: 22.8%, wrong corrections: 8.6%
-Scatter: 17 bits, decoding success: 37.7%, wrong corrections: 7.6%
-Scatter: 18 bits, decoding success: 52.6%, wrong corrections: 6.0%
-Scatter: 19 bits, decoding success: 70.8%, wrong corrections: 3.7%
-Scatter: 20 bits, decoding success: 82.2%, wrong corrections: 2.4%
-Scatter: 21 bits, decoding success: 88.7%, wrong corrections: 1.7%
-Scatter: 22 bits, decoding success: 94.0%, wrong corrections: 1.0%
-Scatter: 23 bits, decoding success: 96.6%, wrong corrections: 1.1%
-Scatter: 24 bits, decoding success: 98.8%, wrong corrections: 0.1%
-Scatter: 25 bits, decoding success: 98.8%, wrong corrections: 0.2%
-Scatter: 26 bits, decoding success: 99.8%, wrong corrections: 0.0%
-Scatter: 27 bits, decoding success: 99.5%, wrong corrections: 0.2%
-Scatter: 28 bits, decoding success: 100.0%, wrong corrections: 0.0%
-Scatter: 29 bits, decoding success: 100.0%, wrong corrections: 0.0%
-Scatter: 30 bits, decoding success: 99.9%, wrong corrections: 0.0%
+Scatter: 15 bits, decoding success: 14.0%, wrong corrections: 10.0%, repeat code success: 0.0%
+Scatter: 16 bits, decoding success: 25.0%, wrong corrections: 8.0%, repeat code success: 0.0%
+Scatter: 17 bits, decoding success: 40.0%, wrong corrections: 8.0%, repeat code success: 1.0%
+Scatter: 18 bits, decoding success: 57.0%, wrong corrections: 4.0%, repeat code success: 1.0%
+Scatter: 19 bits, decoding success: 71.0%, wrong corrections: 4.0%, repeat code success: 2.0%
+Scatter: 20 bits, decoding success: 82.0%, wrong corrections: 2.0%, repeat code success: 1.0%
+Scatter: 21 bits, decoding success: 90.0%, wrong corrections: 2.0%, repeat code success: 3.0%
+Scatter: 22 bits, decoding success: 94.0%, wrong corrections: 1.0%, repeat code success: 3.0%
+Scatter: 23 bits, decoding success: 97.0%, wrong corrections: 1.0%, repeat code success: 5.0%
+Scatter: 24 bits, decoding success: 98.0%, wrong corrections: 0.0%, repeat code success: 8.0%
+Scatter: 25 bits, decoding success: 99.0%, wrong corrections: 0.0%, repeat code success: 11.0%
+Scatter: 26 bits, decoding success: 100.0%, wrong corrections: 0.0%, repeat code success: 11.0%
+Scatter: 27 bits, decoding success: 100.0%, wrong corrections: 0.0%, repeat code success: 16.0%
+Scatter: 28 bits, decoding success: 100.0%, wrong corrections: 0.0%, repeat code success: 17.0%
+Scatter: 29 bits, decoding success: 100.0%, wrong corrections: 0.0%, repeat code success: 23.0%
+Scatter: 30 bits, decoding success: 100.0%, wrong corrections: 0.0%, repeat code success: 26.0%
 
 Wrong correction is when PUCCH_decoder returns some bit sequence, but it
 doesn't match the original message (in most cases PUCCH_decoder returns an
 empty array if it cannot decode/correct the message).
 %}
-    for num_bits = 15:30
-        succ = 0;
-        wrong_dec = 0;
-        num_iterations = 1000;
+    for num_bits = int32(15:30)
+        succ = int32(0);
+        succ_repeat = int32(0);
+        wrong_dec = int32(0);
+        num_iterations = int32(1000);
         for i = 1:num_iterations
             % Generate a random length for 'a' between 12 and 1706
-            A = 13;
+            A = int32(13);
 
             % Generate a random binary row vector 'a' of length A
             a = randi([0, 1], 1, A);
@@ -44,7 +45,17 @@ empty array if it cannot decode/correct the message).
 
             n = length(f_tilde);
             % Randomly select indices to preserve
-            preserved_indices = randperm(n, num_bits);
+            preserved_indices = int32(randperm(n, num_bits));
+
+            % check if it would be recoverable with a repeat code
+            % (repeating the message over and over again)
+            preserved_indices_mod = mod(preserved_indices, A) + 1;
+            full_set = 1:A;
+            missing_values = setdiff(full_set, preserved_indices_mod);
+            if isempty(missing_values)
+                succ_repeat = succ_repeat + 1;
+            end
+
             % Create mask and zero out other values
             mask = false(1, n);
             mask(preserved_indices) = true;
@@ -65,6 +76,6 @@ empty array if it cannot decode/correct the message).
             end
         end
 
-        fprintf("Scatter: %d bits, decoding success: %.1f%%, wrong corrections: %.1f%%\n", num_bits, (100.0 * succ) / num_iterations, (100.0 * wrong_dec) / num_iterations);
+        fprintf("Scatter: %d bits, decoding success: %.1f%%, wrong corrections: %.1f%%, repeat code success: %.1f%%\n", num_bits, (100.0 * succ) / num_iterations, (100.0 * wrong_dec) / num_iterations, (100.0 * succ_repeat) / num_iterations);
     end
 end
